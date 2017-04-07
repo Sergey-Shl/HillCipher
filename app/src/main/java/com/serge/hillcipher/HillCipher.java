@@ -22,7 +22,12 @@ public class HillCipher {
     {
         Integer[][] encMatrix = {{3, 3},
                 {2, 5}};
-        encryptionMatrix = new Matrix(encMatrix);
+        Integer[][] encMatrix2 = {{6, 24, 1},
+                {13, 16, 1000},
+                {20, 17, 15}};
+        Integer[][] encMatrix3 = {{3, 7},
+                {5, 2}};
+        encryptionMatrix = new Matrix(encMatrix2);
         Log.i("INFO", encryptionMatrix.toString());
     }
 
@@ -40,19 +45,27 @@ public class HillCipher {
         decryptionMatrix = decryptionMatrix.LimitWithinNum(alphabetPower);
         Log.i("INFO", decryptionMatrix.toString());
 
-        while (determinant < 1 && determinant > alphabetPower)
+        Integer newDetermiant = determinant;
+        while (newDetermiant < 0 || newDetermiant > alphabetPower)
         {
-            if (determinant < 0)
-                determinant += determinant;
-            else
-                determinant -= determinant;
+            if (newDetermiant < 0)
+                newDetermiant += alphabetPower;
+            if (newDetermiant > alphabetPower)
+                newDetermiant -= alphabetPower;
         }
+
+        Log.i("INFO", "New det: " + newDetermiant);
 
         Integer factor = 0;
 
-        while ((factor * determinant) % alphabetPower != 1)
+        while ((factor * newDetermiant) % alphabetPower != 1)
             factor++;
 
+        Log.i("INFO", factor + "");
+
         decryptionMatrix = decryptionMatrix.MultiplyByNum(factor);
+        Log.i("INFO", decryptionMatrix.toString());
+        decryptionMatrix = decryptionMatrix.LimitWithinNum(alphabetPower);
+        Log.i("INFO", decryptionMatrix.toString());
     }
 }

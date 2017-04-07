@@ -101,26 +101,14 @@ public class Matrix {
 
     public Matrix Cofactor()
     {
-        Integer[][] cofactorMatrix = new Integer[n][m];
-        boolean startWithPlus = true;
+        Matrix cofactorMatrix = new Matrix(this);
         for (int i = 0; i < n; i++) {
-            startWithPlus = (i % 2 == 0);
             for (int j = 0; j < m; j++) {
-                if (startWithPlus) {
-                    if (j % 2 == 0)
-                        cofactorMatrix[i][j] = -matrix[i][j];
-                    else
-                        cofactorMatrix[i][j] = matrix[i][j];
-                } else
-                {
-                    if (j % 2 != 0)
-                        cofactorMatrix[i][j] = -matrix[i][j];
-                    else
-                        cofactorMatrix[i][j] = matrix[i][j];
-                }
+                if ((i + j) % 2 != 0)
+                    cofactorMatrix.matrix[i][j] = -cofactorMatrix.matrix[i][j];
             }
         }
-        return new Matrix(cofactorMatrix);
+        return cofactorMatrix;
     }
 
     public Matrix Transpose()
@@ -150,7 +138,7 @@ public class Matrix {
         Matrix newLimitedMatrix = new Matrix(this);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                while (newLimitedMatrix.matrix[i][j] < 0 && newLimitedMatrix.matrix[i][j] > num)
+                while (newLimitedMatrix.matrix[i][j] < 0 || newLimitedMatrix.matrix[i][j] > num)
                 {
                     if (newLimitedMatrix.matrix[i][j] < 0)
                         newLimitedMatrix.matrix[i][j] += num;
