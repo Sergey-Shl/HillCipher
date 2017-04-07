@@ -33,10 +33,18 @@ public class MainActivity extends AppCompatActivity {
 
         Matrix matrix = new Matrix(M4);
         Matrix minorMatrix = matrix.Minor();
+        Matrix cofactorMatrix = minorMatrix.Cofactor();
+        Matrix transposeMatrix = cofactorMatrix.Transpose();
+
         int determinant =  matrix.Determinant();
-        Log.i("INFO", matrix.toString());
+/*        Log.i("INFO", matrix.toString());
         Log.i("INFO", String.valueOf(determinant));
         Log.i("INFO", minorMatrix.toString());
+        Log.i("INFO", cofactorMatrix.toString());
+        Log.i("INFO", transposeMatrix.toString());
+        Log.i("INFO", transposeMatrix.toString());*/
+
+        HillCipher hillCipher = new HillCipher();
     }
 
 }

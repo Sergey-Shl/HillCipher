@@ -33,7 +33,15 @@ public class Matrix {
 
     Matrix(Matrix matrix)
     {
-        this.matrix = matrix.matrix;
+        //this.matrix = matrix.matrix;
+        this.m = matrix.n;
+        this.n = matrix.m;
+        this.matrix = new Integer[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                this.matrix[i][j] = matrix.matrix[i][j];
+            }
+        }
     }
 
     public Integer Determinant()
@@ -89,6 +97,69 @@ public class Matrix {
             }
         }
         return newMatrix;
+    }
+
+    public Matrix Cofactor()
+    {
+        Integer[][] cofactorMatrix = new Integer[n][m];
+        boolean startWithPlus = true;
+        for (int i = 0; i < n; i++) {
+            startWithPlus = (i % 2 == 0);
+            for (int j = 0; j < m; j++) {
+                if (startWithPlus) {
+                    if (j % 2 == 0)
+                        cofactorMatrix[i][j] = -matrix[i][j];
+                    else
+                        cofactorMatrix[i][j] = matrix[i][j];
+                } else
+                {
+                    if (j % 2 != 0)
+                        cofactorMatrix[i][j] = -matrix[i][j];
+                    else
+                        cofactorMatrix[i][j] = matrix[i][j];
+                }
+            }
+        }
+        return new Matrix(cofactorMatrix);
+    }
+
+    public Matrix Transpose()
+    {
+        Integer[][] transposedMatrix = new Integer[m][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                transposedMatrix[j][i] = matrix[i][j];
+            }
+        }
+        return new Matrix(transposedMatrix);
+    }
+
+    public Matrix MultiplyByNum(int num)
+    {
+        Matrix newMatrix = new Matrix(n, m);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                newMatrix.matrix[i][j] = matrix[i][j] * num;
+            }
+        }
+        return newMatrix;
+    }
+
+    public Matrix LimitWithinNum(int num)
+    {
+        Matrix newLimitedMatrix = new Matrix(this);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                while (newLimitedMatrix.matrix[i][j] < 0 && newLimitedMatrix.matrix[i][j] > num)
+                {
+                    if (newLimitedMatrix.matrix[i][j] < 0)
+                        newLimitedMatrix.matrix[i][j] += num;
+                    else
+                        newLimitedMatrix.matrix[i][j] -= num;
+                }
+            }
+        }
+        return newLimitedMatrix;
     }
 
     @Override
