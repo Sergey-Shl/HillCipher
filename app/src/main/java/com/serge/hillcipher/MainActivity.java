@@ -31,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
                 {6, 3, 4},
                 {5, -2, -3}};
 
+        Integer[][] M5 = {{5, 6},
+                {7, 8}};
+
+        Integer[][] M6 = {{5}, {7}};
+
         Matrix matrix = new Matrix(M4);
         Matrix minorMatrix = matrix.Minor();
         Matrix cofactorMatrix = minorMatrix.Cofactor();
@@ -43,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
         Log.i("INFO", cofactorMatrix.toString());
         Log.i("INFO", transposeMatrix.toString());
         Log.i("INFO", transposeMatrix.toString());*/
+
+        Matrix MM2 = new Matrix(M5);
+        Matrix MM1 = new Matrix(M3);
+
+        Matrix MM3 = new Matrix(MM1.MultiplyByMatrix(MM2));
+        Log.i("Mult", MM3.toString());
 
         HillCipher hillCipher = new HillCipher();
     }

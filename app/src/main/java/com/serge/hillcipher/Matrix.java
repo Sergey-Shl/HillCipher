@@ -26,19 +26,19 @@ public class Matrix {
 
     Matrix(Integer[][] matrix)
     {
-        this.m = matrix.length;
-        this.n = matrix[0].length;
+        this.n = matrix.length;
+        this.m = matrix[0].length;
         this.matrix = matrix;
     }
 
     Matrix(Matrix matrix)
     {
         //this.matrix = matrix.matrix;
-        this.m = matrix.n;
-        this.n = matrix.m;
-        this.matrix = new Integer[n][m];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
+        this.m = matrix.m;
+        this.n = matrix.n;
+        this.matrix = new Integer[this.n][this.m];
+        for (int i = 0; i < this.n; i++) {
+            for (int j = 0; j < this.m; j++) {
                 this.matrix[i][j] = matrix.matrix[i][j];
             }
         }
@@ -131,6 +131,20 @@ public class Matrix {
             }
         }
         return newMatrix;
+    }
+
+    public Matrix MultiplyByMatrix(Matrix matrix)
+    {
+        Matrix result = new Matrix(n, matrix.m);
+        for (int i = 0; i < result.n; i++) {
+            for (int j = 0; j < result.m; j++) {
+                result.matrix[i][j] = 0;
+                for (int k = 0; k < m; k++) {
+                    result.matrix[i][j] += this.matrix[i][k] * matrix.matrix[k][j];
+                }
+            }
+        }
+        return result;
     }
 
     public Matrix LimitWithinNum(int num)
