@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Hill cipher</string>
+    <string name="your_msg">Your msg</string>
 </resources>

@@ -2,14 +2,16 @@ package com.serge.hillcipher;
 
 import android.support.annotation.IntRange;
 
+import java.util.Random;
+
 /**
  * Created by serge on 07.04.2017.
  */
 
 public class Matrix {
-    Integer m;
-    Integer n;
-    Integer[][] matrix;
+    private Integer m;
+    private Integer n;
+    private Integer[][] matrix;
 
     Matrix(int n, int m)
     {
@@ -29,6 +31,16 @@ public class Matrix {
         this.n = matrix.length;
         this.m = matrix[0].length;
         this.matrix = matrix;
+    }
+
+    Matrix(Integer[] vec)
+    {
+        this.n = vec.length;
+        this.m = 1;
+        this.matrix = new Integer[n][m];
+        for (int i = 0; i < vec.length; i++) {
+            matrix[i][0] = vec[i];
+        }
     }
 
     Matrix(Matrix matrix)
@@ -176,4 +188,27 @@ public class Matrix {
         }
         return s;
     }
+
+    Integer getItem(int n, int m)
+    {
+        return matrix[n][m];
+    }
+
+    static Matrix GenerateMatrix(int size, int maxItemSize)
+    {
+        Matrix generatedMatrix = new Matrix(size);
+        Random random = new Random();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                generatedMatrix.matrix[i][j] = random.nextInt(maxItemSize);
+            }
+        }
+        while(generatedMatrix.Determinant() == 0)
+        {
+            generatedMatrix.matrix[random.nextInt(size)][random.nextInt(size)] = random.nextInt(maxItemSize);
+        }
+        generatedMatrix = generatedMatrix.LimitWithinNum(maxItemSize);
+        return generatedMatrix;
+    }
+
 }
