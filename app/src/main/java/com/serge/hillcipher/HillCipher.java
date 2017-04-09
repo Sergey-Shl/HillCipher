@@ -41,7 +41,7 @@ public class HillCipher {
                 {5, 2}};
         encryptionMatrix = new Matrix(encMatrix1);
         //encryptionMatrix = Matrix.GenerateMatrix(vecSize, alphabetPower);
-        Log.i("EncMatrix ", encryptionMatrix.toString());
+        //Log.i("EncMatrix ", encryptionMatrix.toString());
     }
 
     Matrix GenerateDecryptionMatrix()
@@ -67,7 +67,7 @@ public class HillCipher {
                 newDetermiant -= alphabetPower;
         }
 
-        Log.i("INFO", "New det: " + newDetermiant);
+        //Log.i("INFO", "New det: " + newDetermiant);
 
         Integer factor = 0;
 
@@ -86,7 +86,7 @@ public class HillCipher {
         //Log.i("INFO", decryptionMatrix.toString());
         decryptionMatrix = decryptionMatrix.LimitWithinNum(alphabetPower);
         this.decryptionMatrix = decryptionMatrix;
-        Log.i("DecMatrix ", decryptionMatrix.toString());
+        //Log.i("DecMatrix ", decryptionMatrix.toString());
         return decryptionMatrix;
     }
 
@@ -169,8 +169,7 @@ public class HillCipher {
         int numOfParts = encMsg.get(encMsgIndex++);
 
         String decMsg = "";
-        char c = 0;
-        char space = ' ';
+        int c = 0;
         Matrix decVec;
         Integer[] decVecTemp = new Integer[vecSize];
         for (int i = 0; i < numOfParts; i++) {
@@ -184,11 +183,11 @@ public class HillCipher {
             decVec = decVec.LimitWithinNum(alphabetPower);
             Log.i("DecMess #3 (Limit) ", decVec.toString());
             for (int j = 0; j < vecSize; j++) {
-                c = (char)(int)decVec.getItem(j, 0);
-                if (c == 26)
-                    decMsg += space;
+                c = (int)(decVec.getItem(j, 0) + 65);
+                if (c == 26 + 65)
+                    decMsg += " ";
                 else
-                    decMsg += c;
+                    decMsg += (char)c;
             }
         }
 
