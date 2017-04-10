@@ -9,54 +9,41 @@ import java.util.ArrayList;
  */
 
 public class HillCipher {
-    private Matrix encryptionMatrix;
-    private Matrix decryptionMatrix;
-    private Integer alphabetPower = 0;
-    private Integer vecSize = 0;
+    private int alphabetPower = 0;
+    private int vecSize = 0;
 
     HillCipher()
     {
         alphabetPower = 27;
-        vecSize  = 2;
-        GenerateEncryptionMatrix();
-        GenerateDecryptionMatrix();
+        vecSize = 2;
     }
 
     HillCipher(String msg, int vSize)
     {
         alphabetPower = 27;
-        vecSize  = vSize;
-        GenerateEncryptionMatrix();
-        GenerateDecryptionMatrix();
+        vecSize = vSize;
     }
 
-    void GenerateEncryptionMatrix()
+    //Генерирует матрицу шифрования
+    private Matrix GenerateEncryptionMatrix(int vecSize, int alphabetPower)
     {
         Integer[][] encMatrix1 = {{1, 7},
                 {3, 5}};
-        Integer[][] encMatrix2 = {{6, 24, 1},
-                {13, 16, 1000},
-                {20, 17, 15}};
-        Integer[][] encMatrix3 = {{3, 7},
-                {5, 2}};
-        encryptionMatrix = new Matrix(encMatrix1);
+
+        Matrix encryptionMatrix = new Matrix(encMatrix1);
         //encryptionMatrix = Matrix.GenerateMatrix(vecSize, alphabetPower);
-        //Log.i("EncMatrix ", encryptionMatrix.toString());
+        return encryptionMatrix;
     }
 
-    Matrix GenerateDecryptionMatrix()
+    //Генерирует матрицу дешифрования
+    private Matrix GenerateDecryptionMatrix(int vecSize, int alphabetPower, Matrix encryptionMatrix)
     {
         Integer determinant = encryptionMatrix.Determinant();
-        //Log.i("INFO", String.valueOf(determinant));
 
         Matrix decryptionMatrix = encryptionMatrix.Minor();
-        //Log.i("INFO", decryptionMatrix.toString());
         decryptionMatrix = decryptionMatrix.Cofactor();
-        //Log.i("INFO", decryptionMatrix.toString());
         decryptionMatrix = decryptionMatrix.Transpose();
-        //Log.i("INFO", decryptionMatrix.toString());
         decryptionMatrix = decryptionMatrix.LimitWithinNum(alphabetPower);
-        //Log.i("INFO", decryptionMatrix.toString());
 
         Integer newDetermiant = determinant;
         while (newDetermiant < 0 || newDetermiant > alphabetPower)
@@ -66,8 +53,6 @@ public class HillCipher {
             if (newDetermiant > alphabetPower)
                 newDetermiant -= alphabetPower;
         }
-
-        //Log.i("INFO", "New det: " + newDetermiant);
 
         Integer factor = 0;
 
@@ -81,22 +66,20 @@ public class HillCipher {
             }
         }
 
-
         decryptionMatrix = decryptionMatrix.MultiplyByNum(factor);
-        //Log.i("INFO", decryptionMatrix.toString());
         decryptionMatrix = decryptionMatrix.LimitWithinNum(alphabetPower);
-        this.decryptionMatrix = decryptionMatrix;
-        //Log.i("DecMatrix ", decryptionMatrix.toString());
         return decryptionMatrix;
     }
 
+    //Шифрует сообщение
     public ArrayList<Integer> EncryptMessage(String msg)
     {
+        Matrix encryptionMatrix = GenerateEncryptionMatrix(vecSize, alphabetPower);
+
         ArrayList<Integer> encMsg = new ArrayList<Integer>(msg.length() + vecSize*vecSize + 1);
         encMsg.add(vecSize);
-        Log.i("Arr adding", "vecSize = " + vecSize);
 
-        Matrix decMatrxTemp = GenerateDecryptionMatrix();
+        Matrix decMatrxTemp = GenerateDecryptionMatrix(vecSize, alphabetPower, encryptionMatrix);
         for (int i = 0; i < vecSize; i++) {
             for (int j = 0; j < vecSize; j++) {
                 encMsg.add(decMatrxTemp.getItem(i, j));
@@ -115,7 +98,6 @@ public class HillCipher {
         }
 
         encMsg.add(numOfFullParts);
-        Log.i("Arr adding", "Num of parts = " + numOfFullParts);
         Log.i("INFO", "Msg lenght = " + msg.length());
 
         Matrix encVec;
@@ -152,6 +134,7 @@ public class HillCipher {
         return encMsg;
     }
 
+    //Дешифрует сообщение
     public String DecryptMessage(ArrayList<Integer> encMsg)
     {
         int encMsgIndex = 0;
@@ -163,7 +146,7 @@ public class HillCipher {
             }
         }
 
-        decryptionMatrix = new Matrix(decMtrxTemp);
+        Matrix decryptionMatrix = new Matrix(decMtrxTemp);
         Log.i("DecMat", decryptionMatrix.toString());
 
         int numOfParts = encMsg.get(encMsgIndex++);
