@@ -20,7 +20,7 @@ public class Matrix {
         matrix = new Integer[n][m];
     }
 
-    //Квадратная матрица
+    //Square Matrix
     Matrix(int n)
     {
         this.n = this.m = n;
@@ -34,7 +34,7 @@ public class Matrix {
         this.matrix = matrix;
     }
 
-    //Вектор
+    //Vector
     Matrix(Integer[] vec)
     {
         this.n = vec.length;
@@ -47,7 +47,6 @@ public class Matrix {
 
     Matrix(Matrix matrix)
     {
-        //this.matrix = matrix.matrix;
         this.m = matrix.m;
         this.n = matrix.n;
         this.matrix = new Integer[this.n][this.m];
@@ -58,7 +57,7 @@ public class Matrix {
         }
     }
 
-    //Возвращает значение определителя
+    //Returns value of Determinant
     public Integer Determinant()
     {
         Integer result = 0;
@@ -72,7 +71,7 @@ public class Matrix {
         return result;
     }
 
-    //Возвращает матрицу миноров
+    //Returns Minor Matrix
     public Matrix Minor() {
         Integer[][] minorMatrix = new Integer[n][m];
         for (int i = 0; i < n; i++)
@@ -85,7 +84,7 @@ public class Matrix {
         return new Matrix(minorMatrix);
     }
 
-    //Рекурсивная функция нахождения определителя
+    //This function used to calculate Determinant by recursive call
     private Integer Determinant(Integer[][] matrix)
     {
         Integer result = 0;
@@ -101,7 +100,7 @@ public class Matrix {
         return result;
     }
 
-    //Обрезать матрицу, убрав m-столбец и n-строку
+    //Cut n-row and m-column of Matrix
     private Integer[][] Remove(Integer[][] matrix, int n, int m)
     {
         Integer[][] newMatrix = new Integer[matrix.length - 1][matrix[0].length - 1];
@@ -117,7 +116,7 @@ public class Matrix {
         return newMatrix;
     }
 
-    //Возвращает матрицу алгебраич дополнения
+    //Returns cofactor matrix
     public Matrix Cofactor()
     {
         Matrix cofactorMatrix = new Matrix(this);
@@ -130,7 +129,7 @@ public class Matrix {
         return cofactorMatrix;
     }
 
-    //Возвращает транспонированную матрицу
+    //Returns transposed matrix
     public Matrix Transpose()
     {
         Integer[][] transposedMatrix = new Integer[m][n];
@@ -142,7 +141,7 @@ public class Matrix {
         return new Matrix(transposedMatrix);
     }
 
-    //Возвращает результат умножения матрицы на число
+    //Returns multiplication matrix by number
     public Matrix MultiplyByNum(int num)
     {
         Matrix newMatrix = new Matrix(n, m);
@@ -154,7 +153,7 @@ public class Matrix {
         return newMatrix;
     }
 
-    //Возвращает матрицу - результат умножения 2-х матриц
+    //Returns multiplication matrix by matrix
     public Matrix MultiplyByMatrix(Matrix matrix)
     {
         Matrix result = new Matrix(n, matrix.m);
@@ -169,7 +168,7 @@ public class Matrix {
         return result;
     }
 
-    //Ограничить значения матрицы в пределах от 0 до num
+    //Limit values of matrix between 0 and Number
     public Matrix LimitWithinNum(int num)
     {
         Matrix newLimitedMatrix = new Matrix(this);
@@ -200,13 +199,13 @@ public class Matrix {
         return s;
     }
 
-    //Возвращает элемент из n-строки и m-столбца
+    //Get matrix value
     Integer getItem(int n, int m)
     {
         return matrix[n][m];
     }
 
-    //Генерирует и возвращает квадратную матрицу размером size с максимальным значением элементов в ней - maxItemSize
+    //Generating square matrix size*size with random values
     static Matrix GenerateMatrix(int size, int maxItemSize)
     {
         Matrix generatedMatrix = new Matrix(size);

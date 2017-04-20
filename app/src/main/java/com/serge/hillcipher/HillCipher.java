@@ -18,33 +18,28 @@ public class HillCipher {
         vecSize = 2;
     }
 
-    HillCipher(String msg, int vSize)
-    {
-        alphabetPower = 27;
-        vecSize = vSize;
-    }
-
-    //Генерирует матрицу шифрования
+    //Generating the Encryption Matrix
     private Matrix GenerateEncryptionMatrix(int vecSize, int alphabetPower)
     {
         Integer[][] encMatrix1 = {{1, 7},
-                {3, 5}};
-
+                                 {3, 5}};
         Matrix encryptionMatrix = new Matrix(encMatrix1);
-        //encryptionMatrix = Matrix.GenerateMatrix(vecSize, alphabetPower);
         return encryptionMatrix;
     }
 
-    //Генерирует матрицу дешифрования
+    //Generating the Decryption Matrix
     private Matrix GenerateDecryptionMatrix(int vecSize, int alphabetPower, Matrix encryptionMatrix)
     {
+        //Calculate determinant
         Integer determinant = encryptionMatrix.Determinant();
 
+        //Creating and calculating Decryption matrix
         Matrix decryptionMatrix = encryptionMatrix.Minor();
         decryptionMatrix = decryptionMatrix.Cofactor();
         decryptionMatrix = decryptionMatrix.Transpose();
         decryptionMatrix = decryptionMatrix.LimitWithinNum(alphabetPower);
 
+        //Calculating multiplier for Dec Matrix
         Integer newDetermiant = determinant;
         while (newDetermiant < 0 || newDetermiant > alphabetPower)
         {
@@ -53,17 +48,10 @@ public class HillCipher {
             if (newDetermiant > alphabetPower)
                 newDetermiant -= alphabetPower;
         }
-
         Integer factor = 0;
-
         while ((factor * newDetermiant) % alphabetPower != 1)
         {
             factor++;
-            // ???????????????
-            if(factor > 20) {
-                factor = 0;
-                encryptionMatrix = Matrix.GenerateMatrix(vecSize, alphabetPower);
-            }
         }
 
         decryptionMatrix = decryptionMatrix.MultiplyByNum(factor);
@@ -71,11 +59,12 @@ public class HillCipher {
         return decryptionMatrix;
     }
 
-    //Шифрует сообщение
+    //Decryption the Message func
     public ArrayList<Integer> EncryptMessage(String msg)
     {
         Matrix encryptionMatrix = GenerateEncryptionMatrix(vecSize, alphabetPower);
 
+        //Forming a message: adding VecSize, DecMatrix, number of parts of signs and coded message
         ArrayList<Integer> encMsg = new ArrayList<Integer>(msg.length() + vecSize*vecSize + 1);
         encMsg.add(vecSize);
 
@@ -86,19 +75,14 @@ public class HillCipher {
             }
         }
 
-        Log.i("EncMat", encryptionMatrix.toString());
-
         String newMsg = msg.toUpperCase();
         int numOfFullParts = msg.length() / vecSize;
-        int numOfAdditionalSigns = 0;
 
         if(msg.length() % vecSize != 0) {
             numOfFullParts++;
-            numOfAdditionalSigns = msg.length() % vecSize;
         }
 
         encMsg.add(numOfFullParts);
-        Log.i("INFO", "Msg lenght = " + msg.length());
 
         Matrix encVec;
         Integer[] tempVec = new Integer[vecSize];
@@ -107,7 +91,6 @@ public class HillCipher {
         for (int i = 0; i < numOfFullParts; i++) {
             for (int j = 0; j < vecSize; j++) {
                 if (index < newMsg.length()) {
-                    Log.i("Index = ", String.valueOf(index));
                     c = (int) newMsg.charAt(index++);
                     if (c != 32)
                         tempVec[j] = c - 65;
@@ -116,16 +99,12 @@ public class HillCipher {
                 }
                 else
                 {
-                    Log.i("Index (elese) = ", String.valueOf(index));
                     tempVec[j] = 26;
                 }
             }
             encVec = new Matrix(tempVec);
-            Log.i("EncVec (Input)", encVec.toString());
             encVec = encryptionMatrix.MultiplyByMatrix(encVec);
-            Log.i("EncVec (Mult)", encVec.toString());
             encVec = encVec.LimitWithinNum(alphabetPower);
-            Log.i("EncVec (Limit)", encVec.toString());
             for (int j = 0; j < vecSize; j++) {
                 encMsg.add(encVec.getItem(j, 0));
             }
@@ -134,10 +113,12 @@ public class HillCipher {
         return encMsg;
     }
 
-    //Дешифрует сообщение
+    //Method Decrypts and returns a String message
     public String DecryptMessage(ArrayList<Integer> encMsg)
     {
         int encMsgIndex = 0;
+
+        //Eject vector size and Dec key from message
         vecSize = encMsg.get(encMsgIndex++);
         Integer[][] decMtrxTemp = new Integer[vecSize][vecSize];
         for (int i = 0; i < vecSize; i++) {
@@ -147,7 +128,6 @@ public class HillCipher {
         }
 
         Matrix decryptionMatrix = new Matrix(decMtrxTemp);
-        Log.i("DecMat", decryptionMatrix.toString());
 
         int numOfParts = encMsg.get(encMsgIndex++);
 
@@ -160,11 +140,8 @@ public class HillCipher {
                 decVecTemp[j] = encMsg.get(encMsgIndex++);
             }
             decVec = new Matrix(decVecTemp);
-            Log.i("DecMess #1 (Input) ", decVec.toString());
             decVec = decryptionMatrix.MultiplyByMatrix(decVec);
-            Log.i("DecMess #2 (Mult) ", decVec.toString());
             decVec = decVec.LimitWithinNum(alphabetPower);
-            Log.i("DecMess #3 (Limit) ", decVec.toString());
             for (int j = 0; j < vecSize; j++) {
                 c = (int)(decVec.getItem(j, 0) + 65);
                 if (c == 26 + 65)
@@ -173,8 +150,6 @@ public class HillCipher {
                     decMsg += (char)c;
             }
         }
-
-        Log.i("MSG", decMsg);
 
         return decMsg;
     }
